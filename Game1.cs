@@ -9,10 +9,10 @@ namespace Template
     /// </summary>
     public class Game1 : Game
     {
-        Texture2D gunImg;
+        Texture2D Hunter2;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Vector2 gunPos = new Vector2(0, 300);
+        Rectangle gunPos;
 
         public Game1()
         {
@@ -28,6 +28,8 @@ namespace Template
         /// </summary>
         protected override void Initialize()
         {
+            gunPos = new Rectangle(new Point(0,300), new Point(200, 50));
+
             // TODO: Add your initialization logic here
 
             base.Initialize();
@@ -39,7 +41,7 @@ namespace Template
         /// </summary>
         protected override void LoadContent()
         {
-            gunImg = Content.Load<Texture2D>("Hunter2"); 
+            Hunter2 = Content.Load<Texture2D>("Hunter2"); 
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
@@ -64,6 +66,12 @@ namespace Template
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Enter))
                 Exit();
+            KeyboardState kstate = Keyboard.GetState();
+	        if (kstate.IsKeyDown(Keys.Up)&& kstate.().X < yourWindowWidth)
+		        gunPos.Y-=10;
+	        if (kstate.IsKeyDown(Keys.Down))
+		        gunPos.Y+=10;
+	        base.Update(gameTime);
 
             // TODO: Add your update logic here
 
@@ -79,9 +87,8 @@ namespace Template
             GraphicsDevice.Clear(Color.White);
 
             // TODO: Add your drawing code here
-            Vector2 gunPos = new Vector2(0, 300);
             spriteBatch.Begin();
-            spriteBatch.Draw(gunImg,new Rectangle((int)gunPos.X,(int)gunPos.Y,250,50), Color.White);
+            spriteBatch.Draw(Hunter2, gunPos, Color.White);
             spriteBatch.End();
 
             base.Draw(gameTime);
