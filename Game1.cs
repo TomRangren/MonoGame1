@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace Template
 {
@@ -10,14 +11,20 @@ namespace Template
     public class Game1 : Game
     {
         Texture2D Hunter2;
+        Texture2D FiendeTexture;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Rectangle gunPos;
+        Fiende fiende;
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            graphics.IsFullScreen = true;
+            graphics.ApplyChanges();
         }
 
         /// <summary>
@@ -28,7 +35,11 @@ namespace Template
         /// </summary>
         protected override void Initialize()
         {
-            gunPos = new Rectangle(new Point(0,300), new Point(200, 50));
+            gunPos = new Rectangle(new Point(0,300), new Point(200, 60));
+            gunPos.Y = graphics.PreferredBackBufferHeight - gunPos.Height;
+            gunPos.X = graphics.PreferredBackBufferWidth /100 - gunPos.Width/100;
+            FiendeTexture = Content.Load<Texture2D>("FiendeTexture");
+            fiende = new Fiende(FiendeTexture, new Vector2(1000, 0));
 
             // TODO: Add your initialization logic here
 
@@ -41,7 +52,10 @@ namespace Template
         /// </summary>
         protected override void LoadContent()
         {
-            Hunter2 = Content.Load<Texture2D>("Hunter2"); 
+            Hunter2 = Content.Load<Texture2D>("Hunter2");
+            FiendeTexture = Content.Load<Texture2D>("FiendeTexture");
+
+
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
@@ -67,11 +81,12 @@ namespace Template
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Enter))
                 Exit();
             KeyboardState kstate = Keyboard.GetState();
-	        if (kstate.IsKeyDown(Keys.Up)&& kstate.().X < yourWindowWidth)
-		        gunPos.Y-=10;
-	        if (kstate.IsKeyDown(Keys.Down))
-		        gunPos.Y+=10;
-	        base.Update(gameTime);
+            if (kstate.IsKeyDown(Keys.Down) && gunPos.Y < graphics.PreferredBackBufferHeight - gunPos.Height)
+                gunPos.Y += 10;
+            if (kstate.IsKeyDown(Keys.Up) && gunPos.Y > 0)
+                gunPos.Y -= 10;
+
+            fiende.Update();
 
             // TODO: Add your update logic here
 
@@ -89,8 +104,8 @@ namespace Template
             // TODO: Add your drawing code here
             spriteBatch.Begin();
             spriteBatch.Draw(Hunter2, gunPos, Color.White);
+            fiende.Draw(spriteBatch);
             spriteBatch.End();
-
             base.Draw(gameTime);
         }
     }
