@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
 
 namespace Template
@@ -12,10 +13,14 @@ namespace Template
     {
         Texture2D Hunter2;
         Texture2D FiendeTexture;
+        Texture2D swamp;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Rectangle gunPos;
+        Vector2 enemyPos;
         Fiende fiende;
+        Random random = new Random();
+        private int spawnAmount = 10;
 
         public Game1()
         {
@@ -23,7 +28,7 @@ namespace Template
             Content.RootDirectory = "Content";
             graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            graphics.IsFullScreen = true;
+            graphics.IsFullScreen = false;
             graphics.ApplyChanges();
         }
 
@@ -35,11 +40,17 @@ namespace Template
         /// </summary>
         protected override void Initialize()
         {
-            gunPos = new Rectangle(new Point(0,300), new Point(200, 60));
+            gunPos = new Rectangle(new Point(0, 300), new Point(200, 60));
             gunPos.Y = graphics.PreferredBackBufferHeight - gunPos.Height;
-            gunPos.X = graphics.PreferredBackBufferWidth /100 - gunPos.Width/100;
+            gunPos.X = graphics.PreferredBackBufferWidth / 100 - gunPos.Width / 100;
             FiendeTexture = Content.Load<Texture2D>("FiendeTexture");
-            fiende = new Fiende(FiendeTexture, new Vector2(1000, 0));
+            fiende = new Fiende(FiendeTexture);
+         
+
+            enemyPos.Y = random.Next(graphics.PreferredBackBufferHeight-50);
+            enemyPos.X = graphics.PreferredBackBufferWidth+2000;
+
+            fiende.FiendePos = enemyPos;
 
             // TODO: Add your initialization logic here
 
@@ -54,6 +65,7 @@ namespace Template
         {
             Hunter2 = Content.Load<Texture2D>("Hunter2");
             FiendeTexture = Content.Load<Texture2D>("FiendeTexture");
+            swamp = Content.Load<Texture2D>("swamp");
 
 
             // Create a new SpriteBatch, which can be used to draw textures.
@@ -78,13 +90,14 @@ namespace Template
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Enter))
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
             KeyboardState kstate = Keyboard.GetState();
             if (kstate.IsKeyDown(Keys.Down) && gunPos.Y < graphics.PreferredBackBufferHeight - gunPos.Height)
                 gunPos.Y += 10;
             if (kstate.IsKeyDown(Keys.Up) && gunPos.Y > 0)
                 gunPos.Y -= 10;
+
 
             fiende.Update();
 
@@ -99,12 +112,16 @@ namespace Template
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+
+
             GraphicsDevice.Clear(Color.White);
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
+            spriteBatch.Draw(swamp, Vector2.Zero, Color.White);
             spriteBatch.Draw(Hunter2, gunPos, Color.White);
             fiende.Draw(spriteBatch);
+
             spriteBatch.End();
             base.Draw(gameTime);
         }
