@@ -13,14 +13,15 @@ namespace Template
     {
         Texture2D Hunter2;
         Texture2D FiendeTexture;
-        Texture2D swamp;
+        Texture2D swamp2;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Rectangle gunPos;
         Vector2 enemyPos;
         Fiende fiende;
         Random random = new Random();
-        private int spawnAmount = 10;
+
+       
 
         public Game1()
         {
@@ -28,7 +29,7 @@ namespace Template
             Content.RootDirectory = "Content";
             graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            graphics.IsFullScreen = false;
+            graphics.IsFullScreen = true;
             graphics.ApplyChanges();
         }
 
@@ -47,8 +48,8 @@ namespace Template
             fiende = new Fiende(FiendeTexture);
          
 
-            enemyPos.Y = random.Next(graphics.PreferredBackBufferHeight-50);
-            enemyPos.X = graphics.PreferredBackBufferWidth+2000;
+            enemyPos.Y = random.Next(graphics.PreferredBackBufferHeight-100);
+            enemyPos.X = graphics.PreferredBackBufferWidth+3000;
 
             fiende.FiendePos = enemyPos;
 
@@ -65,7 +66,7 @@ namespace Template
         {
             Hunter2 = Content.Load<Texture2D>("Hunter2");
             FiendeTexture = Content.Load<Texture2D>("FiendeTexture");
-            swamp = Content.Load<Texture2D>("swamp");
+            swamp2 = Content.Load<Texture2D>("swamp2");
 
 
             // Create a new SpriteBatch, which can be used to draw textures.
@@ -100,13 +101,15 @@ namespace Template
 
 
             fiende.Update();
+         
+    
 
             // TODO: Add your update logic here
 
             base.Update(gameTime);
         }
 
-        /// <summary>
+        
         /// This is called when the game should draw itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
@@ -118,7 +121,7 @@ namespace Template
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
-            spriteBatch.Draw(swamp, Vector2.Zero, Color.White);
+            spriteBatch.Draw(swamp2, Vector2.Zero, Color.White);
             spriteBatch.Draw(Hunter2, gunPos, Color.White);
             fiende.Draw(spriteBatch);
 
